@@ -1,6 +1,6 @@
 ---
 layout: post
-title:  "Testing Jekyll!"
+title:  "Testing Jekyll with a post about rust!"
 date:   2025-05-19 22:50:08 -0400
 categories: test
 ---
