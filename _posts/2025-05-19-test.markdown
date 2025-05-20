@@ -13,6 +13,6 @@ fn main() {
 }
 {% endhighlight %}
 
-This is a link to rust:
+This is a link to rust: [Rust Homepage][Rust]
 
 [Rust]: https://www.rust-lang.org/
