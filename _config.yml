@@ -31,7 +31,6 @@ github_username:  ic3man5
 
 # Build settings
 theme: minima
-  skin: auto
 plugins:
   - jekyll-feed
 
