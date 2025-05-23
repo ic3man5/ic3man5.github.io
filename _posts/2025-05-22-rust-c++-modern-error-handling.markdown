@@ -2,7 +2,7 @@
 layout: post
 title:  "Modern Error Handling in Rust and C++23"
 date:   2025-05-22 15:52:00 -0400
-categories: rust c++ zig
+categories: rust c++
 ---
 
 Introduction
@@ -15,7 +15,7 @@ There is a third choice of error handling that is becoming more popular with mod
 The Result Pattern
 -------------
 
-The result Pattern is a return value that represents either success or failure. The pattern forces you to handle the failure and not ignore it, which typically results less error-prone code. Rust has the [`std::result::Result`](https://doc.rust-lang.org/std/result/enum.Result.html) enum and C++23 has introduced the [`std::expected`](https://en.cppreference.com/w/cpp/utility/expected) class. 
+The result pattern is a return value that represents either success or failure. The pattern forces you to handle the failure and not ignore it, which typically results less error-prone code. Rust has the [`std::result::Result`](https://doc.rust-lang.org/std/result/enum.Result.html) enum and C++23 has introduced the [`std::expected`](https://en.cppreference.com/w/cpp/utility/expected) class. Below is example code that checks if a value is 0, 1, or invalid if not either of the two and returns the result pattern.
 
 Rust example:
 ===
@@ -41,7 +41,7 @@ fn main() {
 
 `Error: Value 3 is invalid!`
 
-C++ Example
+C++ example
 ===
 
 {% highlight c++ %}
@@ -74,8 +74,55 @@ auto main(int argc, char* argv[]) -> int {
 
 `Error: Value 3 is invalid!`
 
+Why It Matters
+---
 
+You maybe asking yourself, why does this matter and what problem does it solve? To answer that we can look at this simple example of opening a file with traditional C++ APIs:
 
+{% highlight c++ %}
+#include <fstream>
+#include <iostream>
+
+auto main() -> int {
+    // Open the file
+    std::fstream my_file("file.txt", std::ios::in);
+    // Read the first line of the file
+    std::string line;
+    std::getline(my_file, line);
+    std::cout << "first line: " << line << "\n";
+
+    return 0;
+}
+
+{% endhighlight %}
+
+`first line: `
+
+This might be a simple enough program but it comes with some flaws. First we aren't checking if the file was actually opened. This is easy to miss since we are creating an object and C++ constructors can't return values. The only language feature we can use here is exception handling in the constructor which is highly frowned upon in C++. Second, `std::getline` is called on a file descriptor that isn't valid. This also fails silently.
+
+So how do we fix this? In C++ our only option using the standard library is to make calls to make sure its open and valid. There are calls to make the standard library adapt `std::expected` but that would be very unlikely due to complexity and compatibility reasons.
+
+Lets take a look at how a modern language like rust uses the result pattern in the standard library:
+
+{% highlight rust %}
+use std::fs::File;
+use std::io::BufReader;
+use std::io::prelude::*;
+
+fn main() {
+    let file = File::open("test.txt").expect("Failed to open file");
+    let reader = BufReader::new(file);
+    if let Some(first_line) = reader.lines().next().and_then(|line| line.ok()) {
+        println!("First line: {}", first_line);
+    }
+}
+{% endhighlight %}
+
+{% highlight bash %}
+thread 'main' panicked at main.rs:6:39:
+Failed to open file: Os { code: 2, kind: NotFound, message: "No such file or directory" }
+note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
+{% endhighlight %}
 
 
 [C-wiki]: https://en.wikipedia.org/wiki/C_(programming_language)
