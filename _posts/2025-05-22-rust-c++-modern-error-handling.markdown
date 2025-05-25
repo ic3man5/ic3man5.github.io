@@ -45,6 +45,7 @@ C++ example
 ===
 
 {% highlight c++ %}
+// g++ --std=c++23 -Wall -Wpedantic
 #include <iostream>
 #include <format>
 #include <cstdint>
