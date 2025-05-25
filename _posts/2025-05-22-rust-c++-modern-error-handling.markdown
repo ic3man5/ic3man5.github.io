@@ -100,7 +100,7 @@ auto main() -> int {
 
 This might be a simple enough program but it comes with some flaws. First we aren't checking if the file was actually opened. This is easy to miss since we are creating an object and C++ constructors can't return values. The only language feature we can use here is exception handling in the constructor which is highly frowned upon in C++. Second, `std::getline` is called on a file descriptor that isn't valid. This also fails silently.
 
-So how do we fix this? In C++ our only option using the standard library is to make calls to make sure its open and valid. There are calls to make the standard library adapt `std::expected` but that would be very unlikely due to complexity and compatibility reasons.
+So how do we fix this? In C++ our only option using the standard library is to make calls to make sure its open and valid. There are [talks](https://open-std.org/JTC1/SC22/WG21/docs/papers/2020/p1683r0.html) to make the standard library adapt `std::expected` but that would be very unlikely due to complexity and compatibility reasons.
 
 Lets take a look at how a modern language like rust uses the result pattern in the standard library:
 
@@ -124,6 +124,9 @@ Failed to open file: Os { code: 2, kind: NotFound, message: "No such file or dir
 note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
 {% endhighlight %}
 
+[`expect`](https://doc.rust-lang.org/std/result/enum.Result.html#method.expect) here tells the program to panic (exit) if the file doesn't exist. In a real application `expect` and `unwrap` are generally not used but in simple examples its okay.
+
+Part 2 will go into advanced usage of the result pattern.
 
 [C-wiki]: https://en.wikipedia.org/wiki/C_(programming_language)
 [Go-homepage]: https://go.dev/
