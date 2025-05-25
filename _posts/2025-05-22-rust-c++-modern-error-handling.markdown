@@ -50,7 +50,7 @@ C++ example
 #include <cstdint>
 #include <expected>
 
-auto check_value(const uint64_t& value) -> std::expected<bool, std::string> {
+auto check_value(const int64_t& value) -> std::expected<bool, std::string> {
     if (value == 0) {
         return false;
     } else if (value == 1) {
